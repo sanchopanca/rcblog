@@ -7,6 +7,11 @@ class HelloHandler(tornado.web.RequestHandler):
         self.write('Hello, World!')
 
 
+class MongoTestHandler(tornado.web.RequestHandler):
+
+    def get(self):
+        pass 
+
 handler_map = [
     (r'/', HelloHandler)
 ]
