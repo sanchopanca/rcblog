@@ -1,17 +1,16 @@
-import tornado.web
+from flask import Flask, render_template
+import markdown
 
 
-class HelloHandler(tornado.web.RequestHandler):
-
-    def get(self):
-        self.write('Hello, World!')
+app = Flask(__name__)
 
 
-class MongoTestHandler(tornado.web.RequestHandler):
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-    def get(self):
-        pass 
 
-handler_map = [
-    (r'/', HelloHandler)
-]
+@app.route('/posts/<int:post_id>')
+def post(post_id):
+    return markdown.markdown(open('rcblog/templates/test.md').read(),
+                             ['markdown.extensions.extra'])
