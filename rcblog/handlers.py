@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 import markdown
 
 
@@ -14,3 +14,17 @@ def index():
 def post(post_id):
     return markdown.markdown(open('rcblog/templates/test.md').read(),
                              ['markdown.extensions.extra'])
+
+
+@app.route('/posts/add')
+def add_post():
+    return render_template('add_post.html')
+
+
+@app.route('/posts', methods=['POST'])
+def commit_post():
+    title = request.form['title']
+    md = request.form['post']
+    with open('/home/sanchopanca/src/rcblog/rcblog/posts_repository/{}.md'.format(title), 'w') as f:
+        f.write(md)
+    return redirect(url_for('index'))
