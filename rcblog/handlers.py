@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-import markdown
+from rcblog import utils
 
 
 app = Flask(__name__)
@@ -12,8 +12,7 @@ def index():
 
 @app.route('/posts/<int:post_id>')
 def post(post_id):
-    return markdown.markdown(open('rcblog/templates/test.md').read(),
-                             ['markdown.extensions.extra'])
+    return utils.md_to_html(open('rcblog/templates/test.md').read())
 
 
 @app.route('/posts/add')
