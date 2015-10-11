@@ -20,6 +20,11 @@ def add_post():
     return render_template('add_post.html')
 
 
+@app.route('/posts')
+def posts_list():
+    return render_template('posts.html', posts=utils.get_posts_list())
+
+
 @app.route('/posts', methods=['POST'])
 def commit_post():
     title = request.form['title']

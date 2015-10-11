@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Posts</title>
+</head>
+<body>
+    {% for post in posts %}
+    <a href="{{'/posts_repository/{}'.format(post)}}">post</a>
+    {% endfor %}
+
+</body>
+</html>
