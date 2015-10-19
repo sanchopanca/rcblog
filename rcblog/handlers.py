@@ -1,9 +1,11 @@
 from functools import wraps
 
 from flask import Flask, render_template, request, redirect, url_for, Response
+from flask_bower import Bower
 from rcblog import utils
 
 app = Flask(__name__)
+Bower(app)
 
 
 def check_auth(username, password):
