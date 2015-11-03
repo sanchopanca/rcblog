@@ -9,9 +9,11 @@
     <link href="{{url_for('bower.static', filename='bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
 </head>
 <body>
-    <h1>Hello!</h1>
-    <a href="/posts/add">Add a post</a>
-    <a href="/posts">All posts</a>
+    <div class="container">
+        <h1>Hello!</h1>
+        <a href="/posts/add">Add a post</a>
+        <a href="/posts">All posts</a>
+    </div>
     <script src="{{url_for('bower.static', filename='jquery/dist/jquery.js')}}"></script>
     <script src="{{url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js')}}"></script>
 </body>

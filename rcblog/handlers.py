@@ -41,7 +41,12 @@ def index():
 
 @app.route('/posts/<int:post_id>')
 def post(post_id):
-    return utils.md_to_html(open('rcblog/templates/test.md').read())
+    post_html = utils.md_to_html(open('rcblog/templates/test.md').read())
+    post = {
+        'title': 'Title',
+        'html': post_html,
+    }
+    return render_template('post.html', post=post)
 
 
 @app.route('/posts/add')
@@ -52,7 +57,7 @@ def add_post():
 
 @app.route('/posts')
 def posts_list():
-    return render_template('posts.html', posts=utils.get_posts_list())
+    return render_template('posts.html', posts=get_all_posts_test())
 
 
 @app.route('/posts', methods=['POST'])
@@ -62,3 +67,18 @@ def commit_post():
     with open('/home/sanchopanca/src/rcblog/rcblog/posts_repository/{}.md'.format(title), 'w') as f:
         f.write(md)
     return redirect(url_for('index'))
+
+
+def get_all_posts_test():
+        return [
+            {
+                'id': 1,
+                'title': 'How to do something',
+                'html': utils.md_to_html(open('rcblog/templates/test.md').read()),
+            },
+            {
+                'id': 2,
+                'title': 'How to do something 2',
+                'html': utils.md_to_html(open('rcblog/templates/test.md').read()),
+            }
+        ]

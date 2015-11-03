@@ -6,21 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link href="{{url_for('bower.static', filename='bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
-    <title>Add a new post</title>
+    <title>Posts</title>
 </head>
 <body>
     <div class="container">
-        <form role="form" action="/posts" method="post">
-            <div class="form-group">
-                <label for="title">Title:</label>
-                <input type="text" class="form-control" name="title" id="title">
+        <article class="blogpost">
+            <h2>{{post['title']}}</h2>
+            <div class="post-content well">
+                {{post['html'] | safe}}
             </div>
-            <div class="form-group">
-                <label for="post">Post:</label>
-                <textarea name="post" class="form-control" id="post"></textarea>
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-        </form>
+        </article>
     </div>
     <script src="{{url_for('bower.static', filename='jquery/dist/jquery.js')}}"></script>
     <script src="{{url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js')}}"></script>
