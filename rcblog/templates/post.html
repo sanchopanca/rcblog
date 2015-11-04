@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link href="{{url_for('bower.static', filename='bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
+    <link href="{{url_for('bower.static', filename='highlightjs/styles/default.css')}}" rel="stylesheet">
     <title>Posts</title>
 </head>
 <body>
@@ -17,6 +18,8 @@
             </div>
         </article>
     </div>
+    <script src="{{url_for('bower.static', filename='highlightjs/highlight.pack.min.js')}}"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script src="{{url_for('bower.static', filename='jquery/dist/jquery.js')}}"></script>
     <script src="{{url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js')}}"></script>
 </body>
