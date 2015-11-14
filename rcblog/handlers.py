@@ -1,7 +1,10 @@
 from functools import wraps
+import os.path
+import threading
 
 from flask import Flask, render_template, request, redirect, url_for, Response
 from flask_bower import Bower
+from rcblog import git
 from rcblog import utils
 
 app = Flask(__name__)
@@ -64,8 +67,11 @@ def posts_list():
 def commit_post():
     title = request.form['title']
     md = request.form['post']
-    with open('/home/sanchopanca/src/rcblog/rcblog/posts_repository/{}.md'.format(title), 'w') as f:
+    file_name = '{}.md'.format(title)
+    file_path = utils.get_repository_path() / file_name
+    with open(str(file_path), 'w') as f:
         f.write(md)
+    threading.Thread(target=git.commit, args=(utils.get_repository_path(), [file_name], "Add {}".format(file_name)))
     return redirect(url_for('index'))
 
 
