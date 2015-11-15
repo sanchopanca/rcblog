@@ -59,7 +59,13 @@ def add_post():
 
 @app.route('/posts')
 def posts_list():
-    return render_template('posts.html', posts=get_all_posts_test())
+    posts = get_all_posts_test()
+    for post in posts:
+        for language, translation in post['translations'].items():
+            translation['html'] = utils.md_to_html(open(translation['markdown_file']).read())
+
+    print(posts)
+    return render_template('posts.html', posts=posts)
 
 
 @app.route('/posts', methods=['POST'])
@@ -75,15 +81,31 @@ def commit_post():
 
 
 def get_all_posts_test():
-        return [
-            {
-                'id': 1,
-                'title': 'How to do something',
-                'html': utils.md_to_html(open('rcblog/templates/test.md').read()),
+    return [
+        {
+            'id': 1,
+            'translations': {
+                'eng': {
+                    'title': 'How to do something',
+                    'markdown_file': 'rcblog/templates/test.md'
+                },
+                'rus': {
+                    'title': 'Как сделать что-то',
+                    'markdown_file': 'rcblog/templates/test.md'
+                }
             },
-            {
-                'id': 2,
-                'title': 'How to do something 2',
-                'html': utils.md_to_html(open('rcblog/templates/test.md').read()),
-            }
-        ]
+        },
+        {
+            'id': 2,
+            'translations': {
+                'eng': {
+                    'title': 'How to do something 2',
+                    'markdown_file': 'rcblog/templates/test.md'
+                },
+                'rus': {
+                    'title': 'Как сделать что-то 2',
+                    'markdown_file': 'rcblog/templates/test.md'
+                }
+            },
+        }
+    ]
