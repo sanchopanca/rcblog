@@ -37,12 +37,12 @@ class TestDataBase(unittest.TestCase):
         db.r.table('posts').delete().run(self.date_base.connection)
 
     def test_add_translation(self):
-        self.date_base.add_post({'eng': 'post1_eng.md', 'rus': 'post1_rus.md'}, ['tag1', 'tag2'])
+        self.date_base.add_post({'eng': 'post1_eng.md'}, ['tag1', 'tag2'])
         posts = self.date_base.get_all_posts()
         self.assertEqual(len(posts), 1)
         post = posts[0]
         id_ = post['id']
-        self.date_base.add_translation(id_, {'jbo': 'post1_jbo.md'})
+        self.date_base.add_translation(id_, {'jbo': 'post1_jbo.md', 'rus': 'post1_rus.md'})
         posts = self.date_base.get_all_posts()
         self.assertEqual(len(posts), 1)
         post = posts[0]

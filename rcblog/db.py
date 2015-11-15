@@ -23,18 +23,14 @@ class DataBase(object):
         }).run(self.connection)
 
     def add_translation(self, id_, markdown_files: dict):
-        # TODO insert all in once
-        for lang, markdown_file in markdown_files.items():
-            r.table('posts').get(id_).update({
-                'translations': {lang: markdown_file}
-            }).run(self.connection)
+        r.table('posts').get(id_).update({
+            'translations': markdown_files
+        }).run(self.connection)
 
     def add_tags(self, id_, tags: list):
-        # TODO Insert all in once
-        for tag in tags:
-            r.table('posts').get(id_).update({
-                'tags': r.row['tags'].append(tag)
-            }).run(self.connection)
+        r.table('posts').get(id_).update({
+            'tags': r.row['tags'].splice_at(-1, tags)
+        }).run(self.connection)
 
     def get_all_posts(self):
         cursor = r.table('posts').run(self.connection)

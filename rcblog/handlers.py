@@ -1,5 +1,4 @@
 from functools import wraps
-import os.path
 import threading
 
 from flask import Flask, render_template, request, redirect, url_for, Response
