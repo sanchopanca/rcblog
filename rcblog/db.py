@@ -10,11 +10,17 @@ class DataBase(object):
     def _create_posts_table(self):
         r.table_create('posts').run(self.connection)
 
+    def _drop_posts_table(self):
+        r.table_drop('posts').run(self.connection)
+
     def _create_languages_table(self):
         r.table_create('languages').run(self.connection)
-        r.table('languages').insert({'eng': 'English'})
-        r.table('languages').insert({'rus': 'Русский'})
-        r.table('languages').insert({'jbo': 'la .lojban.'})
+        r.table('languages').insert({'eng': 'English'}).run(self.connection)
+        r.table('languages').insert({'rus': 'Русский'}).run(self.connection)
+        r.table('languages').insert({'jbo': 'la .lojban.'}).run(self.connection)
+
+    def _drop_languages_table(self):
+        r.table_drop('languages').run(self.connection)
 
     def add_post(self, translations: dict, tags: list):
         """
@@ -45,6 +51,16 @@ class DataBase(object):
         cursor = r.table('posts').run(self.connection)
         return [post for post in cursor]
 
+    def get_all_languages(self):
+        languages = {}
+        cursor = r.table('languages').run(self.connection)
+        for language in cursor:
+            print('i am here')
+            print(language)
+            languages.update(language)
+        del languages['id']
+        return languages
+
     def get_posts_by_tag(self, tag: str):
         cursor = r.table('posts').run(self.connection)
         return [post for post in cursor if tag in post['tags']]
@@ -54,6 +70,8 @@ class DataBase(object):
         return [language for language in cursor]
 
     def init(self):
+        self._drop_posts_table()
+        self._drop_languages_table()
         self._create_posts_table()
         self._create_languages_table()
 

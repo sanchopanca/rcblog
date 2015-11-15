@@ -3,8 +3,12 @@ import threading
 
 from flask import Flask, render_template, request, redirect, url_for, Response
 from flask_bower import Bower
+
 from rcblog import git
 from rcblog import utils
+from rcblog.db import DataBase
+
+database = DataBase()
 
 app = Flask(__name__)
 Bower(app)
@@ -54,7 +58,7 @@ def post(post_id):
 @app.route('/posts/add')
 @requires_auth
 def add_post():
-    return render_template('add_post.html')
+    return render_template('add_post.html', languages=database.get_all_languages())
 
 
 @app.route('/posts')
