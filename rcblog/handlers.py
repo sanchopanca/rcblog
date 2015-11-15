@@ -47,11 +47,10 @@ def index():
 
 @app.route('/posts/<int:post_id>')
 def post(post_id):
-    post_html = utils.md_to_html(open('rcblog/templates/test.md').read())
-    post = {
-        'title': 'Title',
-        'html': post_html,
-    }
+    post = get_post_by_id_test(post_id)
+    for language, translation in post['translations'].items():
+        translation['html'] = utils.md_to_html(open(translation['markdown_file']).read())
+    import pprint; pprint.pprint(post)
     return render_template('post.html', post=post)
 
 
@@ -68,7 +67,6 @@ def posts_list():
         for language, translation in post['translations'].items():
             translation['html'] = utils.md_to_html(open(translation['markdown_file']).read())
 
-    print(posts)
     return render_template('posts.html', posts=posts)
 
 
@@ -113,3 +111,19 @@ def get_all_posts_test():
             },
         }
     ]
+
+
+def get_post_by_id_test(*args):
+    return {
+        'id': 1,
+        'translations': {
+            'eng': {
+                'title': 'How to do something',
+                'markdown_file': 'rcblog/templates/test.md'
+            },
+            'rus': {
+                'title': 'Как сделать что-то',
+                'markdown_file': 'rcblog/templates/test.md'
+            }
+        },
+    }

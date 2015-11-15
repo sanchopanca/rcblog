@@ -12,9 +12,9 @@
 <body>
     <div class="container">
         <article class="blogpost">
-            <h2>{{post['title']}}</h2>
+            <h2>{{post['translations']['eng']['title']}}</h2>
             <div class="post-content well">
-                {{post['html'] | safe}}
+                {{post['translations']['eng']['html'] | safe}}
             </div>
         </article>
     </div>
