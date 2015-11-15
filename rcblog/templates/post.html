@@ -11,6 +11,15 @@
 </head>
 <body>
     <div class="container">
+        <ul class="nav nav-tabs">
+            {% for code, language in languages.items() %}
+                {% if selected_language == code %}
+                    <li class="active">{{language}}</li>
+                {% else %}
+                    <li><a href="{{current_address + '?lang=' + code}}">{{language}}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
         <article class="blogpost">
             <h2>{{post['translations']['eng']['title']}}</h2>
             <div class="post-content well">

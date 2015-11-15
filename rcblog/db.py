@@ -55,9 +55,19 @@ class DataBase(object):
         languages = {}
         cursor = r.table('languages').run(self.connection)
         for language in cursor:
-            print('i am here')
-            print(language)
             languages.update(language)
+        del languages['id']
+        return languages
+
+    def get_languages_by_codes(self, *codes):
+        # TODO Optimize the query
+        languages = {}
+        cursor = r.table('languages').run(self.connection)
+        for language in cursor:
+            for code in codes:
+                if code in language:
+                    languages.update(language)
+                    continue
         del languages['id']
         return languages
 

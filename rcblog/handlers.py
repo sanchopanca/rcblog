@@ -47,11 +47,18 @@ def index():
 
 @app.route('/posts/<int:post_id>')
 def post(post_id):
+    selected_language = request.args.get('lang', 'eng')
     post = get_post_by_id_test(post_id)
+    language_codes = []
     for language, translation in post['translations'].items():
+        language_codes.append(language)
         translation['html'] = utils.md_to_html(open(translation['markdown_file']).read())
-    import pprint; pprint.pprint(post)
-    return render_template('post.html', post=post)
+    languages = database.get_languages_by_codes(*language_codes)
+    return render_template('post.html',
+                           post=post,
+                           selected_language=selected_language,
+                           languages=languages,
+                           current_address='/posts/{}'.format(post_id))
 
 
 @app.route('/posts/add')
