@@ -14,7 +14,7 @@
         <ul class="nav nav-tabs">
             {% for code, language in languages.items() %}
                 {% if selected_language == code %}
-                    <li class="active">{{language}}</li>
+                    <li class="active"><a href="#">{{language}}</a></li>
                 {% else %}
                     <li><a href="{{current_address + '?lang=' + code}}">{{language}}</a></li>
                 {% endif %}
