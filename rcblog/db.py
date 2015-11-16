@@ -22,7 +22,7 @@ class DataBase(object):
     def _drop_languages_table(self):
         r.table_drop('languages').run(self.connection)
 
-    def add_post(self, translations: dict, tags: list):
+    def add_post(self, translations: dict, tags: list, draft=False):
         """
         :param translations:
          dict {
@@ -34,6 +34,7 @@ class DataBase(object):
         """
         r.table('posts').insert({
             'translations': translations,
+            'draft': draft,
             'tags': tags,
         }).run(self.connection)
 
@@ -85,8 +86,20 @@ class DataBase(object):
         return [language for language in cursor]
 
     def init(self):
-        self._drop_posts_table()
-        self._drop_languages_table()
-        self._create_posts_table()
-        self._create_languages_table()
+        try:
+            self._drop_posts_table()
+        except Exception as e:
+            print(e)
+        try:
+            self._drop_languages_table()
+        except Exception as e:
+            print(e)
+        try:
+            self._create_posts_table()
+        except Exception as e:
+            print(e)
+        try:
+            self._create_languages_table()
+        except Exception as e:
+            print(e)
 
