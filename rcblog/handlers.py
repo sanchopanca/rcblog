@@ -46,7 +46,7 @@ def index():
 
 
 @app.route('/posts/<int:post_id>')
-def post(post_id):
+def show_post(post_id):
     selected_language = request.args.get('lang', 'eng')
     post = get_post_by_id_test(post_id)
     language_codes = []
@@ -59,6 +59,28 @@ def post(post_id):
                            selected_language=selected_language,
                            languages=languages,
                            current_address='/posts/{}'.format(post_id))
+
+
+@app.route('/drafts/<int:draft_id>')
+def show_draft(draft_id):
+    selected_language = request.args.get('lang', 'eng')
+    post = get_post_by_id_test(draft_id)
+    language_codes = []
+    for language, translation in post['translations'].items():
+        language_codes.append(language)
+        translation['html'] = utils.md_to_html(open(translation['markdown_file']).read())
+        translation['post'] = open(translation['markdown_file']).read()
+    languages = database.get_languages_by_codes(*language_codes)
+    all_languages = database.get_all_languages()
+    remaining_languages = utils.complement_of_lists_of_dictionaries(all_languages, languages)
+    for language in remaining_languages:
+        post['translations'][language] = {'title': '', 'post': ''}
+    import pprint; pprint.pprint(post)
+    return render_template('draft.html',
+                           post=post,
+                           selected_language=selected_language,
+                           languages=all_languages,
+                           values=post['translations'])
 
 
 @app.route('/posts/add')
@@ -77,15 +99,44 @@ def posts_list():
     return render_template('posts.html', posts=posts)
 
 
+@app.route('/drafts')
+def drafts_list():
+    drafts = get_all_drafts_test()
+    for draft in drafts:
+        for language, translation in draft['translations'].items():
+            translation['html'] = utils.md_to_html(open(translation['markdown_file']).read())
+
+    return render_template('drafts.html', posts=drafts)
+
+
 @app.route('/posts', methods=['POST'])
 def commit_post():
-    title = request.form['title']
-    md = request.form['post']
-    file_name = '{}.md'.format(title)
-    file_path = utils.get_repository_path() / file_name
-    with open(str(file_path), 'w') as f:
-        f.write(md)
-    threading.Thread(target=git.commit, args=(utils.get_repository_path(), [file_name], "Add {}".format(file_name)))
+    post = {'translations': {}}
+    language_codes = set()
+    for key in request.form:
+        if '$' in key:
+            language_codes.add(key.split('$')[0])
+
+    files_to_commit = []
+
+    for language_code in language_codes:
+        title = request.form.get(language_code + '$title', '')
+        md = request.form.get(language_code + '$post', '')
+        if title and md:
+            file_name = '{}_{}.md'.format(title, language_code)
+            file_path = utils.get_repository_path() / file_name
+            files_to_commit.append(file_path)
+            with open(str(file_path), 'w') as f:
+                f.write(md)
+            post['translations'][language_code] = {
+                'title': title,
+                'markdown_file': file_name
+            }
+    draft = bool(request.form.get('draft', False))
+    database.add_post(post['translations'], [], draft)
+    threading.Thread(target=git.commit, args=(utils.get_repository_path(),
+                                              files_to_commit,
+                                              'Add {}'.format('new post')))
     return redirect(url_for('index'))
 
 
@@ -93,6 +144,7 @@ def get_all_posts_test():
     return [
         {
             'id': 1,
+            'draft': False,
             'translations': {
                 'eng': {
                     'title': 'How to do something',
@@ -106,6 +158,40 @@ def get_all_posts_test():
         },
         {
             'id': 2,
+            'draft': False,
+            'translations': {
+                'eng': {
+                    'title': 'How to do something 2',
+                    'markdown_file': 'rcblog/templates/test.md'
+                },
+                'rus': {
+                    'title': 'Как сделать что-то 2',
+                    'markdown_file': 'rcblog/templates/test.md'
+                }
+            },
+        },
+        {
+            'id': 3,
+            'draft': True,
+            'translations': {
+                'eng': {
+                    'title': 'How to do something 2',
+                    'markdown_file': 'rcblog/templates/test.md'
+                },
+                'rus': {
+                    'title': 'Как сделать что-то 2',
+                    'markdown_file': 'rcblog/templates/test.md'
+                }
+            },
+        }
+    ]
+
+
+def get_all_drafts_test():
+    return [
+        {
+            'id': 3,
+            'draft': True,
             'translations': {
                 'eng': {
                     'title': 'How to do something 2',
@@ -123,6 +209,7 @@ def get_all_posts_test():
 def get_post_by_id_test(*args):
     return {
         'id': 1,
+        'draft': False,
         'translations': {
             'eng': {
                 'title': 'How to do something',

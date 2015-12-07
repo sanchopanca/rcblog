@@ -29,11 +29,11 @@
                 {% endif %}
                     <div class="form-group">
                         <label for="{{code}}_title">Title:</label>
-                        <input type="text" class="form-control" name="{{code}}$title" id="{{code}}_title">
+                        <input type="text" class="form-control" name="title" id="{{code}}_title" value="{{values[code]['title']}}">
                     </div>
                     <div class="form-group">
                         <label for="{{code}}_post">Post:</label>
-                        <textarea name="{{code}}$post" class="form-control" id="{{code}}_post"></textarea>
+                        <textarea name="post" class="form-control" id="{{code}}_post">{{values[code]['post']}}</textarea>
                     </div>
                 </div>
                 {% endfor %}

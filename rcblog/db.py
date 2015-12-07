@@ -24,6 +24,8 @@ class DataBase(object):
 
     def add_post(self, translations: dict, tags: list, draft=False):
         """
+        :param draft: is this post draft or not
+        :param tags: list of tags
         :param translations:
          dict {
             'lng': {

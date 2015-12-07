@@ -14,18 +14,26 @@
         <ul class="nav nav-tabs">
             {% for code, language in languages.items() %}
                 {% if selected_language == code %}
-                    <li class="active"><a href="#">{{language}}</a></li>
+                    <li class="active"><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
                 {% else %}
-                    <li><a href="{{current_address + '?lang=' + code}}">{{language}}</a></li>
+                    <li><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
                 {% endif %}
             {% endfor %}
         </ul>
-        <article class="blogpost">
-            <h2>{{post['translations']['eng']['title']}}</h2>
-            <div class="post-content well">
-                {{post['translations']['eng']['html'] | safe}}
-            </div>
-        </article>
+        <div class="tab-content">
+            {% for language_code, translation in post['translations'].items() %}
+            {% if selected_language == language_code %}
+            <article class="blogpost tab-pane fade active in" id="{{ language_code }}">
+            {% else %}
+            <article class="blogpost tab-pane fade" id="{{language_code}}">
+            {% endif %}
+                <h2>{{translation['title']}}</h2>
+                <div class="post-content well">
+                    {{translation['html'] | safe}}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
     </div>
     <script src="{{url_for('bower.static', filename='highlightjs/highlight.pack.min.js')}}"></script>
     <script>hljs.initHighlightingOnLoad();</script>

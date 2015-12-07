@@ -20,3 +20,18 @@ def get_posts_list() -> list:
 def get_repository_path() -> Path:
     cur_dir = Path(os.path.dirname(os.path.abspath(__file__)))
     return cur_dir / 'posts_repository'
+
+
+def complement_of_lists_of_dictionaries(a: dict, b: dict):
+    a_tuple = tuple((key, value) for (key, value) in a.items())
+    b_tuple = tuple((key, value) for (key, value) in b.items())
+    c_set = set(a_tuple) - set(b_tuple)
+    c = {}
+    for key, value in c_set:
+        c[key] = value
+    return c
+
+
+if __name__ == '__main__':
+    print(complement_of_lists_of_dictionaries({'a': 'A', 'b': 'B'}, {'a': 'A'}))
+
