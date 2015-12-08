@@ -136,7 +136,7 @@ def commit_post():
     database.add_post(post['translations'], [], draft)
     threading.Thread(target=git.commit, args=(utils.get_repository_path(),
                                               files_to_commit,
-                                              'Add {}'.format('new post')))
+                                              'Add {}'.format('new post'))).run()
     return redirect(url_for('index'))
 
 
