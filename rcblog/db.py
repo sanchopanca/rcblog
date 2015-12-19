@@ -51,7 +51,11 @@ class DataBase(object):
         }).run(self.connection)
 
     def get_all_posts(self):
-        cursor = r.table('posts').run(self.connection)
+        cursor = r.table('posts').filter({'draft': False}).run(self.connection)
+        return [post for post in cursor]
+
+    def get_all_drafts(self):
+        cursor = r.table('posts').filter({'draft': True}).run(self.connection)
         return [post for post in cursor]
 
     def get_all_languages(self):
