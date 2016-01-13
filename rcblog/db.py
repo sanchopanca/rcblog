@@ -83,9 +83,8 @@ class DataBase(object):
         return [post for post in cursor if tag in post['tags']]
 
     def get_post_by_id(self, id_):
-        cursor = r.table('posts').get(id_).run(self.connection)
-        for post in cursor:
-            return post
+        post = r.table('posts').get(id_).run(self.connection)
+        return post
 
     def get_list_of_languages(self):
         cursor = r.table('language').run(self.connection)
