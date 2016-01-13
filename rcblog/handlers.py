@@ -52,7 +52,8 @@ def show_post(post_id):
     language_codes = []
     for language, translation in post['translations'].items():
         language_codes.append(language)
-        translation['html'] = utils.md_to_html(open(translation['markdown_file']).read())
+        md_file_path = str(utils.get_repository_path() / translation['markdown_file'])
+        translation['html'] = utils.md_to_html(open(md_file_path).read())
     languages = database.get_languages_by_codes(*language_codes)
     return render_template('post.html',
                            post=post,
@@ -93,7 +94,8 @@ def posts_list():
     posts = database.get_all_posts()
     for post in posts:
         for language, translation in post['translations'].items():
-            translation['html'] = utils.md_to_html(open(translation['markdown_file']).read())
+            md_file_path = str(utils.get_repository_path() / translation['markdown_file'])
+            translation['html'] = utils.md_to_html(open(md_file_path).read())
 
     return render_template('posts.html', posts=posts)
 
@@ -103,7 +105,8 @@ def drafts_list():
     drafts = database.get_all_drafts()
     for draft in drafts:
         for language, translation in draft['translations'].items():
-            translation['html'] = utils.md_to_html(open(translation['markdown_file']).read())
+            md_file_path = str(utils.get_repository_path() / translation['markdown_file'])
+            translation['html'] = utils.md_to_html(open(md_file_path).read())
 
     return render_template('drafts.html', posts=drafts)
 
