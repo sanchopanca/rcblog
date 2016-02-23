@@ -9,9 +9,15 @@
     <title>Posts</title>
 </head>
 <body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Home</a>
+            </div>
+        </div>
+    </nav>
     <div class="container">
-        <h1>Title</h1>
-        {% for post in posts %}
+        {% for post in posts if post['translations'] %}
         <article class="blogpost">
             <a href="{{'/posts/%s' % post['id']}}">
                 <h2>{{post['translations']['eng']['title']}}</h2>

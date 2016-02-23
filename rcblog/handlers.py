@@ -14,6 +14,18 @@ app = Flask(__name__)
 Bower(app)
 
 
+@app.route('/')
+@app.route('/posts')
+def posts_list():
+    posts = database.get_all_posts()
+    for post in posts:
+        for language, translation in post['translations'].items():
+            md_file_path = str(utils.get_repository_path() / translation['markdown_file'])
+            translation['html'] = utils.md_to_html(open(md_file_path).read())
+
+    return render_template('posts.html', posts=posts)
+
+
 def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
@@ -38,11 +50,6 @@ def requires_auth(f):
         return f(*args, **kwargs)
 
     return decorated
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 
 @app.route('/posts/<post_id>')
@@ -87,17 +94,6 @@ def show_draft(draft_id):
 @requires_auth
 def add_post():
     return render_template('add_post.html', languages=database.get_all_languages())
-
-
-@app.route('/posts')
-def posts_list():
-    posts = database.get_all_posts()
-    for post in posts:
-        for language, translation in post['translations'].items():
-            md_file_path = str(utils.get_repository_path() / translation['markdown_file'])
-            translation['html'] = utils.md_to_html(open(md_file_path).read())
-
-    return render_template('posts.html', posts=posts)
 
 
 @app.route('/drafts')
