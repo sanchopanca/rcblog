@@ -1,2 +1,2 @@
 # rcblog
-Blog with revision control
+Blog ~~with revision control~~

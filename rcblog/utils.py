@@ -5,9 +5,9 @@ import CommonMark
 
 
 def md_to_html(md: str) -> str:
-    parser = CommonMark.DocParser()
+    parser = CommonMark.Parser()
     ast = parser.parse(md)
-    return CommonMark.HTMLRenderer().render(ast)
+    return CommonMark.HtmlRenderer().render(ast)
 
 
 def get_posts_list() -> list:

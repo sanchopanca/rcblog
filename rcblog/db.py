@@ -30,7 +30,7 @@ class DataBase(object):
          dict {
             'lng': {
                 'title': 'Title of the post',
-                'markdown_file': 'path/to/markdown/file.md'
+                'markdown': 'content of post'
             }
         }
         """
