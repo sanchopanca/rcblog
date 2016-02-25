@@ -60,7 +60,7 @@ def show_post(post_id):
     language_codes = []
     for language, translation in post['translations'].items():
         language_codes.append(language)
-        translation['html'] = utils.md_to_html(translation['markdown_text'])
+        translation['html'] = utils.md_to_html(translation['markdown'])
     languages = database.get_languages_by_codes(*language_codes)
     return render_template('post.html',
                            post=post,
