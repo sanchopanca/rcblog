@@ -1,28 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <link href="{{url_for('bower.static', filename='bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
-    <title>Posts</title>
-</head>
-<body>
-    <div class="container">
-        <h1>Title</h1>
-        {% for post in posts %}
-        <article class="blogpost">
-            <a href="{{'/drafts/%s' % post['id']}}">
-                <h2>{{post['translations']['eng']['title']}}</h2>
-            </a>
-            <div class="post-content well">
-                {{post['translations']['eng']['html'] | safe}}
-            </div>
-        </article>
-        {% endfor %}
-    </div>
-    <script src="{{url_for('bower.static', filename='jquery/dist/jquery.js')}}"></script>
-    <script src="{{url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js')}}"></script>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Posts{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Title</h1>
+    {% for post in posts %}
+    <article class="blogpost">
+        <a href="{{'/drafts/%s' % post['id']}}">
+            <h2>{{post['translations']['eng']['title']}}</h2>
+        </a>
+        <div class="post-content well">
+            {{post['translations']['eng']['html'] | safe}}
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,50 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <link href="{{url_for('bower.static', filename='bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
-    <title>Add a new post</title>
-</head>
-<body>
-    <div class="container">
-        <form role="form" action="/posts" method="post">
-            <ul class="nav nav-tabs">
-                {% for code, language in languages.items() %}
-                    {% if selected_language == code %}
-                        <li class="active"><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
-                    {% else %}
-                        <li><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-            <div class="tab-content">
-                {% for code in languages.keys() %}
-                {% if loop.first %}
-                <div class="tab-pane fade active in" id="{{code}}">
+{% extends "base.html" %}
+{% block title %}Draft{% endblock %}
+{% block content %}
+<div class="container">
+    <form role="form" action="/posts" method="post">
+        <ul class="nav nav-tabs">
+            {% for code, language in languages.items() %}
+                {% if selected_language == code %}
+                    <li class="active"><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
                 {% else %}
-                <div class="tab-pane fade" id="{{ code }}">
+                    <li><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
                 {% endif %}
-                    <div class="form-group">
-                        <label for="{{code}}_title">Title:</label>
-                        <input type="text" class="form-control" name="title" id="{{code}}_title" value="{{values[code]['title']}}">
-                    </div>
-                    <div class="form-group">
-                        <label for="{{code}}_post">Post:</label>
-                        <textarea name="post" class="form-control" id="{{code}}_post">{{values[code]['post']}}</textarea>
-                    </div>
+            {% endfor %}
+        </ul>
+        <div class="tab-content">
+            {% for code in languages.keys() %}
+            {% if loop.first %}
+            <div class="tab-pane fade active in" id="{{code}}">
+            {% else %}
+            <div class="tab-pane fade" id="{{ code }}">
+            {% endif %}
+                <div class="form-group">
+                    <label for="{{code}}_title">Title:</label>
+                    <input type="text" class="form-control" name="title" id="{{code}}_title" value="{{values[code]['title']}}">
                 </div>
-                {% endfor %}
+                <div class="form-group">
+                    <label for="{{code}}_post">Post:</label>
+                    <textarea name="post" class="form-control" id="{{code}}_post">{{values[code]['post']}}</textarea>
+                </div>
             </div>
-            <div class="checkbox">
-                    <label><input type="checkbox" name="draft" value="1">Draft</label>
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-        </form>
-    </div>
-    <script src="{{url_for('bower.static', filename='jquery/dist/jquery.js')}}"></script>
-    <script src="{{url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js')}}"></script>
-</body>
-</html>
+            {% endfor %}
+        </div>
+        <div class="checkbox">
+                <label><input type="checkbox" name="draft" value="1">Draft</label>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+{% endblock %}

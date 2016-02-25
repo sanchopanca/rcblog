@@ -5,15 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Index</title>
     <link href="{{url_for('bower.static', filename='bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Hello!</h1>
-        <a href="/posts/add">Add a post</a>
-        <a href="/posts">All posts</a>
-    </div>
+    {% block navigation %}
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Home</a>
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+    {% block content %}{% endblock %}
     <script src="{{url_for('bower.static', filename='jquery/dist/jquery.js')}}"></script>
     <script src="{{url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js')}}"></script>
 </body>

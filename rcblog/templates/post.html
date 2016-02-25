@@ -1,43 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <link href="{{url_for('bower.static', filename='bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
-    <link href="{{url_for('bower.static', filename='highlightjs/styles/default.css')}}" rel="stylesheet">
-    <title>Posts</title>
-</head>
-<body>
-    <div class="container">
-        <ul class="nav nav-tabs">
-            {% for code, language in languages.items() %}
-                {% if selected_language == code %}
-                    <li class="active"><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
-                {% else %}
-                    <li><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-        <div class="tab-content">
-            {% for language_code, translation in post['translations'].items() %}
-            {% if selected_language == language_code %}
-            <article class="blogpost tab-pane fade active in" id="{{ language_code }}">
+{% extends "base.html" %}
+{% block title %}Post{% endblock %}
+{% block content %}
+<div class="container">
+    <ul class="nav nav-tabs">
+        {% for code, language in languages.items() %}
+            {% if selected_language == code %}
+                <li class="active"><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
             {% else %}
-            <article class="blogpost tab-pane fade" id="{{language_code}}">
+                <li><a data-toggle="tab" href="#{{code}}">{{language}}</a></li>
             {% endif %}
-                <h2>{{translation['title']}}</h2>
-                <div class="post-content well">
-                    {{translation['html'] | safe}}
-                </div>
-            </article>
-            {% endfor %}
-        </div>
+        {% endfor %}
+    </ul>
+    <div class="tab-content">
+        {% for language_code, translation in post['translations'].items() %}
+        {% if selected_language == language_code %}
+        <article class="blogpost tab-pane fade active in" id="{{ language_code }}">
+        {% else %}
+        <article class="blogpost tab-pane fade" id="{{language_code}}">
+        {% endif %}
+            <h2>{{translation['title']}}</h2>
+            <div class="post-content well">
+                {{translation['html'] | safe}}
+            </div>
+        </article>
+        {% endfor %}
     </div>
-    <script src="{{url_for('bower.static', filename='highlightjs/highlight.pack.min.js')}}"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-    <script src="{{url_for('bower.static', filename='jquery/dist/jquery.js')}}"></script>
-    <script src="{{url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js')}}"></script>
-</body>
-</html>
+</div>
+<script src="{{url_for('bower.static', filename='highlightjs/highlight.pack.min.js')}}"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+{% endblock %}
