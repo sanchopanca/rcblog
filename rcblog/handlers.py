@@ -79,7 +79,7 @@ def show_draft(draft_id):
         translation['html'] = utils.md_to_html(translation['markdown'])
     languages = database.get_languages_by_codes(*language_codes)
     all_languages = database.get_all_languages()
-    remaining_languages = utils.complement_of_lists_of_dictionaries(all_languages, languages)
+    remaining_languages = utils.difference_of_dictionaries(all_languages, languages)
     for language in remaining_languages:
         post['translations'][language] = {'title': '', 'markdown': '', 'html': ''}
     return render_template('draft.html',

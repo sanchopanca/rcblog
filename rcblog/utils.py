@@ -1,6 +1,3 @@
-import os.path
-from pathlib import Path
-
 import CommonMark
 
 
@@ -10,19 +7,14 @@ def md_to_html(md: str) -> str:
     return CommonMark.HtmlRenderer().render(ast)
 
 
-def get_posts_list() -> list:
-    post_directory = get_repository_path()
-    html_files = [path.name for path in post_directory.iterdir() if path.is_file() and path.suffix == '.html']
-    # print(html_files)
-    return html_files
-
-
-def get_repository_path() -> Path:
-    cur_dir = Path(os.path.dirname(os.path.abspath(__file__)))
-    return cur_dir / 'posts_repository'
-
-
-def complement_of_lists_of_dictionaries(a: dict, b: dict):
+def difference_of_dictionaries(a: dict, b: dict):
+    """
+    Calculates a \ b like if a and b were sets.
+    For example,
+    difference_of_dictionaries({'a': 'A', 'b': 'B'}, {'a': 'A'}) is {'b': 'B'}
+    :param b: a dictionary
+    :param a: a dictionary
+    """
     a_tuple = tuple((key, value) for (key, value) in a.items())
     b_tuple = tuple((key, value) for (key, value) in b.items())
     c_set = set(a_tuple) - set(b_tuple)
@@ -30,8 +22,3 @@ def complement_of_lists_of_dictionaries(a: dict, b: dict):
     for key, value in c_set:
         c[key] = value
     return c
-
-
-if __name__ == '__main__':
-    print(complement_of_lists_of_dictionaries({'a': 'A', 'b': 'B'}, {'a': 'A'}))
-

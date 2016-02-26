@@ -1,4 +1,5 @@
 import rethinkdb as r
+from rethinkdb.errors import ReqlRuntimeError
 
 DB_NAME = 'test'
 
@@ -98,6 +99,7 @@ class DataBase(object):
         return [language for language in cursor]
 
     def init(self):
+        _create_db()
         try:
             self._drop_posts_table()
         except Exception as e:
@@ -114,3 +116,11 @@ class DataBase(object):
             self._create_languages_table()
         except Exception as e:
             print(e)
+
+
+def _create_db():
+    conn = r.connect()
+    try:
+        r.db_create(DB_NAME).run(conn)
+    except ReqlRuntimeError:
+        pass
