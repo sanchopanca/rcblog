@@ -93,7 +93,9 @@ def show_draft(draft_id):
 @app.route('/posts/add')
 @requires_auth
 def add_post():
-    return render_template('add_post.html', languages=database.get_all_languages())
+    return render_template('draft.html',
+                           languages=database.get_all_languages(),
+                           selected_language='eng')
 
 
 @app.route('/drafts')
