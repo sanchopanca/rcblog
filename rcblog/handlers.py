@@ -86,7 +86,8 @@ def show_draft(draft_id):
                            post=post,
                            selected_language=selected_language,
                            languages=all_languages,
-                           values=post['translations'])
+                           values=post['translations'],
+                           post_id=post['id'])
 
 
 @app.route('/posts/add')
@@ -121,6 +122,10 @@ def commit_post():
                 'title': title,
                 'markdown': md,
             }
+    post_id = request.form.get('post-id', None)
     draft = bool(request.form.get('draft', False))
-    database.add_post(post['translations'], [], draft)
+    if post_id:
+        database.update_post(post_id, post['translations'], [], draft)
+    else:
+        database.add_post(post['translations'], [], draft)
     return redirect(url_for('index'))

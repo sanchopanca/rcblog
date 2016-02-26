@@ -40,6 +40,13 @@ class DataBase(object):
             'tags': tags,
         }).run(self.connection)
 
+    def update_post(self, id_, translations: dict, tags: list, draft=False):
+        r.table('posts').get(id_).update({
+            'translations': translations,
+            'draft': draft,
+            'tags': tags,
+        }).run(self.connection)
+
     def add_translation(self, id_, translations: dict):
         r.table('posts').get(id_).update({
             'translations': translations
@@ -107,4 +114,3 @@ class DataBase(object):
             self._create_languages_table()
         except Exception as e:
             print(e)
-
