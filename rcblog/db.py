@@ -103,20 +103,20 @@ class DataBase(object):
         _create_db()
         try:
             self._drop_posts_table()
-        except Exception as e:
-            print(e)
+        except ReqlRuntimeError:
+            pass
         try:
             self._drop_languages_table()
-        except Exception as e:
-            print(e)
+        except ReqlRuntimeError:
+            pass
         try:
             self._create_posts_table()
-        except Exception as e:
-            print(e)
+        except ReqlRuntimeError:
+            pass
         try:
             self._create_languages_table()
-        except Exception as e:
-            print(e)
+        except ReqlRuntimeError:
+            pass
 
 
 def _create_db():
