@@ -2,4 +2,3 @@ CommonMark
 Flask
 Flask-Bower
 rethinkdb
-sh

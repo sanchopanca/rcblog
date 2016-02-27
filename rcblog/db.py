@@ -1,12 +1,13 @@
 import rethinkdb as r
 from rethinkdb.errors import ReqlRuntimeError
 
+DB_HOST = 'rethinkdb-rcblog'
 DB_NAME = 'test'
 
 
 class DataBase(object):
     def __init__(self):
-        self.connection = r.connect(db=DB_NAME)
+        self.connection = r.connect(host=DB_HOST, db=DB_NAME)
 
     def _create_posts_table(self):
         r.table_create('posts').run(self.connection)
@@ -119,7 +120,7 @@ class DataBase(object):
 
 
 def _create_db():
-    conn = r.connect()
+    conn = r.connect(host=DB_HOST)
     try:
         r.db_create(DB_NAME).run(conn)
     except ReqlRuntimeError:
