@@ -2,45 +2,44 @@ from functools import wraps
 
 from flask import Flask, render_template, request, redirect, url_for, Response
 from flask_bower import Bower
+from flask_login import LoginManager, login_user, login_required
 
 from rcblog import utils
 from rcblog.db import DataBase
+from rcblog.user import User
 
 database = DataBase()
 
 app = Flask(__name__)
+app.secret_key = 'so_secret'
 Bower(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 
-def check_auth(username, password):
-    """This function is called to check if a username /
-    password combination is valid.
-    """
-    return username == 'admin' and password == 'secret'
-
-
-def authenticate():
-    """Sends a 401 response that enables basic auth"""
-    return Response(
-        'Could not verify your access level for that URL.\n'
-        'You have to login with proper credentials', 401,
-        {'WWW-Authenticate': 'Basic realm="Login Required"'})
-
-
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
-            return authenticate()
-        return f(*args, **kwargs)
-
-    return decorated
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get_by_id(user_id)
 
 
 @app.route('/')
 def index():
     return redirect(url_for('posts_list'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = User.get_by_credentials(username, password)
+        if user:
+            login_user(user)  # TODO remember
+            return redirect(url_for('posts_list'))
+        else:
+            return redirect(url_for('login'))  # TODO flash message
 
 
 @app.route('/posts')
@@ -91,7 +90,7 @@ def show_draft(draft_id):
 
 
 @app.route('/posts/add')
-@requires_auth
+@login_required
 def add_post():
     return render_template('draft.html',
                            languages=database.get_all_languages(),
@@ -99,6 +98,7 @@ def add_post():
 
 
 @app.route('/drafts')
+@login_required
 def drafts_list():
     drafts = database.get_all_drafts()
     for draft in drafts:
@@ -109,6 +109,7 @@ def drafts_list():
 
 
 @app.route('/posts', methods=['POST'])
+@login_required
 def commit_post():
     post = {'translations': {}}
     language_codes = set()

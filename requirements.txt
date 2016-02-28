@@ -2,3 +2,4 @@ CommonMark
 Flask
 Flask-Bower
 rethinkdb
+Flask-Login
