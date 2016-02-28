@@ -34,9 +34,10 @@ def login():
     else:
         username = request.form.get('username')
         password = request.form.get('password')
+        remember = bool(request.form.get('remember'))
         user = User.get_by_credentials(username, password)
         if user:
-            login_user(user)  # TODO remember
+            login_user(user, remember)
             return redirect(url_for('posts_list'))
         else:
             return redirect(url_for('login'))  # TODO flash message
