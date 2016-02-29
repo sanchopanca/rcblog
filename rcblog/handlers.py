@@ -1,6 +1,4 @@
-from functools import wraps
-
-from flask import Flask, render_template, request, redirect, url_for, Response
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_bower import Bower
 from flask_login import LoginManager, login_user, login_required
 
@@ -40,6 +38,7 @@ def login():
             login_user(user, remember)
             return redirect(url_for('posts_list'))
         else:
+            flash('Invalid credentials', category='danger')
             return redirect(url_for('login'))  # TODO flash message
 
 
