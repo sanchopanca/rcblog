@@ -13,7 +13,8 @@ docker run --rm \
     -it \
     --name rcblog-web \
     --link rethinkdb-rcblog \
-     rcblog-init-db
+     rcblog \
+     python3 init.py
 
 docker stop rethinkdb-rcblog
 docker rm rethinkdb-rcblog

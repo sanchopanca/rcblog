@@ -10,7 +10,8 @@ docker run --rm \
     -it \
     --name rcblog-web \
     --link rethinkdb-rcblog \
-     rcblog-tests
+     rcblog \
+     python3 -m unittest -v
 
 docker stop rethinkdb-rcblog
 docker rm rethinkdb-rcblog
