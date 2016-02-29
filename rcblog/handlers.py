@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_bower import Bower
-from flask_login import LoginManager, login_user, login_required
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from rcblog import utils
 from rcblog.db import DataBase
@@ -13,6 +13,12 @@ app.secret_key = 'so_secret'
 Bower(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def common_values():
+    return {
+        'logged_in': current_user.is_authenticated,
+    }
 
 
 @login_manager.user_loader
@@ -28,7 +34,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('login.html', **common_values())
     else:
         username = request.form.get('username')
         password = request.form.get('password')
@@ -42,6 +48,12 @@ def login():
             return redirect(url_for('login'))  # TODO flash message
 
 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
 @app.route('/posts')
 def posts_list():
     posts = database.get_all_posts()
@@ -49,7 +61,7 @@ def posts_list():
         for language, translation in post['translations'].items():
             translation['html'] = utils.md_to_html(translation['markdown'])
 
-    return render_template('posts.html', posts=posts)
+    return render_template('posts.html', posts=posts, **common_values())
 
 
 @app.route('/posts/<post_id>')
@@ -65,7 +77,8 @@ def show_post(post_id):
                            post=post,
                            selected_language=selected_language,
                            languages=languages,
-                           current_address='/posts/{}'.format(post_id))
+                           current_address='/posts/{}'.format(post_id),
+                           **common_values())
 
 
 @app.route('/drafts/<draft_id>')
@@ -86,7 +99,8 @@ def show_draft(draft_id):
                            selected_language=selected_language,
                            languages=all_languages,
                            values=post['translations'],
-                           post_id=post['id'])
+                           post_id=post['id'],
+                           **common_values())
 
 
 @app.route('/posts/add')
@@ -94,7 +108,8 @@ def show_draft(draft_id):
 def add_post():
     return render_template('draft.html',
                            languages=database.get_all_languages(),
-                           selected_language='eng')
+                           selected_language='eng',
+                           **common_values())
 
 
 @app.route('/drafts')
@@ -105,7 +120,7 @@ def drafts_list():
         for language, translation in draft['translations'].items():
             translation['html'] = utils.md_to_html(translation['markdown'])
 
-    return render_template('drafts.html', posts=drafts)
+    return render_template('drafts.html', posts=drafts, **common_values())
 
 
 @app.route('/posts', methods=['POST'])
