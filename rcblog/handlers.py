@@ -64,7 +64,11 @@ def logout():
 
 @app.route('/posts')
 def posts_list():
-    posts = database.get_all_posts()
+    tag = request.args.get('tag')
+    if tag:
+        posts = database.get_posts_by_tag(tag)
+    else:
+        posts = database.get_all_posts()
     for post in posts:
         for language, translation in post['translations'].items():
             translation['html'] = utils.md_to_html(translation['markdown'])

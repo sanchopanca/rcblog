@@ -67,3 +67,22 @@ class TestDataBase(unittest.TestCase):
         self.assertEqual(len(posts), 1)
         post = posts[0]
         self.assertEqual(post['tags'], ['tag1', 'tag2', 'tag3', 'tag4'])
+
+    def get_by_tag(self):
+        self.date_base.add_post({'a': 'b'}, ['tag1', 'tag2'])
+
+        posts = self.date_base.get_posts_by_tag('tag1')
+        self.assertEqual(len(posts), 1)
+        posts = self.date_base.get_posts_by_tag('tag2')
+        self.assertEqual(len(posts), 1)
+        posts = self.date_base.get_posts_by_tag('tag3')
+        self.assertEqual(len(posts), 0)
+
+        self.date_base.add_post({'b': 'a'}, ['tag2', 'tag3'])
+
+        posts = self.date_base.get_posts_by_tag('tag1')
+        self.assertEqual(len(posts), 1)
+        posts = self.date_base.get_posts_by_tag('tag2')
+        self.assertEqual(len(posts), 2)
+        posts = self.date_base.get_posts_by_tag('tag3')
+        self.assertEqual(len(posts), 1)
