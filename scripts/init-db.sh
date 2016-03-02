@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [ "$#" -ne 2 ]; then
+    echo "Usage: ./init.sh username password"
+    exit 1
+fi
+
 mkdir -p /srv/rethinkd-data
 
 docker run -d \
@@ -14,7 +19,7 @@ docker run --rm \
     --name rcblog-web \
     --link rethinkdb-rcblog \
      rcblog \
-     python3 init.py
+     python3 init.py "$1" "$2"
 
 docker stop rethinkdb-rcblog
 docker rm rethinkdb-rcblog

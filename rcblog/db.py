@@ -24,6 +24,17 @@ class DataBase(object):
     def _drop_languages_table(self):
         r.table_drop('languages').run(self.connection)
 
+    def _create_credentials_table(self, username, password_hash, salt):
+        r.table_create('credentials').run(self.connection)
+        r.table('credentials').insert({
+            'username': username,
+            'password_hash': password_hash,
+            'salt': salt,
+        }).run(self.connection)
+
+    def _drop_credentials_table(self):
+        r.table_drop('credentials').run(self.connection)
+
     def add_post(self, translations: dict, tags: list, draft=False):
         """
         :param draft: is this post draft or not
@@ -87,6 +98,11 @@ class DataBase(object):
         del languages['id']
         return languages
 
+    def get_credentials(self, username):
+        credentials = r.table('credentials').filter({'username': username}).limit(1).run(self.connection)
+        for item in credentials:
+            return item
+
     def get_posts_by_tag(self, tag: str):
         cursor = r.table('posts').run(self.connection)
         return [post for post in cursor if tag in post['tags']]
@@ -99,7 +115,7 @@ class DataBase(object):
         cursor = r.table('language').run(self.connection)
         return [language for language in cursor]
 
-    def init(self):
+    def init(self, username, password_hash, salt):
         _create_db()
         try:
             self._drop_posts_table()
@@ -110,11 +126,19 @@ class DataBase(object):
         except ReqlRuntimeError:
             pass
         try:
+            self._drop_credentials_table()
+        except ReqlRuntimeError:
+            pass
+        try:
             self._create_posts_table()
         except ReqlRuntimeError:
             pass
         try:
             self._create_languages_table()
+        except ReqlRuntimeError:
+            pass
+        try:
+            self._create_credentials_table(username, password_hash, salt)
         except ReqlRuntimeError:
             pass
 

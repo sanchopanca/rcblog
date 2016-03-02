@@ -10,7 +10,7 @@ class TestDataBase(unittest.TestCase):
 
     def setUp(self):
         self.date_base = db.DataBase()
-        self.date_base.init()
+        self.date_base.init('user', 'hash', 'salt')
 
     def tearDown(self):
         conn = db.r.connect(host=db.DB_HOST)

@@ -3,6 +3,7 @@ from flask_bower import Bower
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 from rcblog import utils
+from rcblog import crypto
 from rcblog.db import DataBase
 from rcblog.user import User
 
@@ -39,13 +40,20 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         remember = bool(request.form.get('remember'))
-        user = User.get_by_credentials(username, password)
+        user = None
+        credentials = database.get_credentials(username)
+        if credentials:
+            credentials_are_correct = crypto.check_password(password,
+                                                            credentials['password_hash'],
+                                                            credentials['salt'])
+            if credentials_are_correct:
+                user = User.get_by_id('1')  # TODO refactor
         if user:
             login_user(user, remember)
             return redirect(url_for('posts_list'))
         else:
             flash('Invalid credentials', category='danger')
-            return redirect(url_for('login'))  # TODO flash message
+            return redirect(url_for('login'))
 
 
 @app.route('/logout')
