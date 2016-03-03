@@ -38,6 +38,10 @@
             </div>
             {% endfor %}
         </div>
+        <div class="form-group">
+            <label for="tags">Tags separated by comma:</label>
+            <input type="text" class="form-control" id="tags" name="tags" value="{{tags | join(', ')}}">
+        </div>
         <div class="checkbox">
                 <label><input type="checkbox" name="draft" value="1">Draft</label>
         </div>

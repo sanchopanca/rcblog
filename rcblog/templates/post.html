@@ -25,6 +25,16 @@
         </article>
         {% endfor %}
     </div>
+    <div class="tags">
+        <div class="btn-group" role="group">
+            {% for tag in post['tags'] %}
+            <form action="/posts" method="get" style="display: inline;">
+                <input type="hidden" name="tag" value="{{tag}}">
+                <button type="submit" class="btn btn-default">{{tag}}</button>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 <script src="{{url_for('bower.static', filename='highlightjs/highlight.pack.min.js')}}"></script>
 <script>hljs.initHighlightingOnLoad();</script>
