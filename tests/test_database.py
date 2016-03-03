@@ -13,8 +13,10 @@ class TestDataBase(unittest.TestCase):
         self.date_base.init('user', 'hash', 'salt')
 
     def tearDown(self):
+        self.date_base.connection.close()
         conn = db.r.connect(host=db.DB_HOST)
         db.r.db_drop(db.DB_NAME).run(conn)
+        conn.close()
 
     def test_add_translation(self):
         eng_translation = {
