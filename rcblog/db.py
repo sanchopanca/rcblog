@@ -4,6 +4,9 @@ import pytz
 import rethinkdb as r
 from rethinkdb.errors import ReqlRuntimeError
 
+from rcblog import utils
+
+
 DB_HOST = 'rethinkdb-rcblog'
 DB_NAME = 'test'
 
@@ -52,6 +55,9 @@ class DataBase(object):
         :param draft: is this post draft or not
         :param date: date of post
         """
+        for language, translation in translations.items():
+            if 'markdown' in translation:
+                translation['html'] = utils.md_to_html(translation['markdown'])
         if date is None:
             date = datetime.datetime.now(pytz.utc)
         r.table('posts').insert({
@@ -62,6 +68,9 @@ class DataBase(object):
         }).run(self.connection)
 
     def update_post(self, id_, translations: dict, tags: list, draft=False, date=None):
+        for language, translation in translations.items():
+            if 'markdown' in translation:
+                translation['html'] = utils.md_to_html(translation['markdown'])
         if date is None:
             date = datetime.datetime.now(pytz.utc)
         r.table('posts').get(id_).update({
@@ -72,6 +81,9 @@ class DataBase(object):
         }).run(self.connection)
 
     def add_translation(self, id_, translations: dict):
+        for language, translation in translations.items():
+            if 'markdown' in translation:
+                translation['html'] = utils.md_to_html(translation['markdown'])
         r.table('posts').get(id_).update({
             'translations': translations
         }).run(self.connection)

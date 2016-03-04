@@ -81,8 +81,6 @@ def posts_list():
     posts_after = total_number_of_posts > (page + 1) * POSTS_PER_PAGE
 
     for post in posts:
-        for language, translation in post['translations'].items():
-            translation['html'] = utils.md_to_html(translation['markdown'])
         post['url'] = utils.urlify(post['translations']['eng']['title'])
 
     base_path = '/posts?tag={}&'.format(tag) if tag else '/posts?'
@@ -106,7 +104,6 @@ def show_post(post_id, title):
     language_codes = []
     for language, translation in post['translations'].items():
         language_codes.append(language)
-        translation['html'] = utils.md_to_html(translation['markdown'])
     languages = database.get_languages_by_codes(*language_codes)
     return render_template('post.html',
                            post=post,
@@ -122,7 +119,6 @@ def show_draft(draft_id):
     language_codes = []
     for language, translation in post['translations'].items():
         language_codes.append(language)
-        translation['html'] = utils.md_to_html(translation['markdown'])
     languages = database.get_languages_by_codes(*language_codes)
     all_languages = database.get_all_languages()
     remaining_languages = utils.difference_of_dictionaries(all_languages, languages)
@@ -152,10 +148,6 @@ def add_post():
 @login_required
 def drafts_list():
     drafts = database.get_drafts()
-    for draft in drafts:
-        for language, translation in draft['translations'].items():
-            translation['html'] = utils.md_to_html(translation['markdown'])
-
     return render_template('drafts.html', posts=drafts, **common_values())
 
 
