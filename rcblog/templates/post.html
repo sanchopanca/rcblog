@@ -35,6 +35,11 @@
             {% endfor %}
         </div>
     </div>
+    <div>
+        {% if logged_in %}
+        <a class="btn btn-default" href="/drafts/{{post['id']}}" role="button">Edit</a>
+        {% endif %}
+    </div>
 </div>
 <script src="{{url_for('bower.static', filename='highlightjs/highlight.pack.min.js')}}"></script>
 <script>hljs.initHighlightingOnLoad();</script>
