@@ -83,6 +83,7 @@ def posts_list():
     for post in posts:
         for language, translation in post['translations'].items():
             translation['html'] = utils.md_to_html(translation['markdown'])
+        post['url'] = utils.urlify(post['translations']['eng']['title'])
 
     base_path = '/posts?tag={}&'.format(tag) if tag else '/posts?'
     previous_page_path = base_path + 'page={}'.format(page - 1)
@@ -98,7 +99,8 @@ def posts_list():
 
 
 @app.route('/posts/<post_id>')
-def show_post(post_id):
+@app.route('/posts/<post_id>/<title>')
+def show_post(post_id, title):
     selected_language = request.args.get('lang', 'eng')
     post = database.get_post_by_id(post_id)
     language_codes = []
@@ -110,7 +112,6 @@ def show_post(post_id):
                            post=post,
                            selected_language=selected_language,
                            languages=languages,
-                           current_address='/posts/{}'.format(post_id),
                            **common_values())
 
 

@@ -1,3 +1,5 @@
+import re
+
 import CommonMark
 
 
@@ -22,3 +24,13 @@ def difference_of_dictionaries(a: dict, b: dict):
     for key, value in c_set:
         c[key] = value
     return c
+
+
+# http://stackoverflow.com/a/1007615/4246963
+def urlify(s):
+    # Remove all non-word characters (everything except numbers and letters)
+    s = re.sub(r"[^\w\s]", '', s)
+    # Replace all runs of whitespace with a single dash
+    s = re.sub(r"\s+", '-', s)
+
+    return s

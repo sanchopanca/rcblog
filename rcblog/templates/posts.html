@@ -4,7 +4,7 @@
 <div class="container">
     {% for post in posts if post['translations'] %}
     <article class="blogpost">
-        <a href="{{'/posts/%s' % post['id']}}">
+        <a href="{{'/posts/%s/%s' % (post['id'], post['url'])}}">
             <h2>{{post['translations']['eng']['title']}}</h2>
         </a>
         <div class="date">
