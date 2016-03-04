@@ -14,6 +14,7 @@ class DataBase(object):
 
     def _create_posts_table(self):
         r.table_create('posts').run(self.connection)
+        r.table('posts').index_create('date')
 
     def _drop_posts_table(self):
         r.table_drop('posts').run(self.connection)
@@ -80,13 +81,33 @@ class DataBase(object):
             'tags': r.row['tags'].splice_at(-1, tags)
         }).run(self.connection)
 
-    def get_all_posts(self):
-        cursor = r.table('posts').filter({'draft': False}).run(self.connection)
-        return [post for post in cursor]
+    def get_posts(self, skip=0, limit=None, tag=None):
+        return self._get_posts(False, skip, limit, tag)
 
-    def get_all_drafts(self):
-        cursor = r.table('posts').filter({'draft': True}).run(self.connection)
-        return [post for post in cursor]
+    def get_number_of_posts(self, tag=None):
+        return self._get_number_of_posts(False, tag)
+
+    def get_drafts(self, skip=0, limit=None, tag=None):
+        return self._get_posts(True, skip, limit, tag)
+
+    def get_number_of_drafts(self, tag=None):
+        return self._get_number_of_posts(True, tag)
+
+    def _get_posts(self, draft, skip, limit, tag):
+        query = r.table('posts').filter({'draft': draft})
+        if tag:
+            query = query.filter(lambda post: post['tags'].contains(tag))
+        query = query.order_by(r.desc('date')).skip(skip)
+        if limit is not None:
+            query = query.limit(limit)
+        cursor = query.run(self.connection)
+        return list(cursor)
+
+    def _get_number_of_posts(self, draft, tag):
+        query = r.table('posts').filter({'draft': draft})
+        if tag:
+            query = query.filter(lambda post: post['tags'].contains(tag))
+        return query.count().run(self.connection)
 
     def get_all_languages(self):
         languages = {}
@@ -112,10 +133,6 @@ class DataBase(object):
         credentials = r.table('credentials').filter({'username': username}).limit(1).run(self.connection)
         for item in credentials:
             return item
-
-    def get_posts_by_tag(self, tag: str):
-        cursor = r.table('posts').run(self.connection)
-        return [post for post in cursor if tag in post['tags']]
 
     def get_post_by_id(self, id_):
         post = r.table('posts').get(id_).run(self.connection)

@@ -19,6 +19,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
+POSTS_PER_PAGE = 10
+
+
 def common_values():
     return {
         'logged_in': current_user.is_authenticated,
@@ -67,16 +70,31 @@ def logout():
 
 @app.route('/posts')
 def posts_list():
-    tag = request.args.get('tag')
-    if tag:
-        posts = database.get_posts_by_tag(tag)
-    else:
-        posts = database.get_all_posts()
+    tag = request.args.get('tag', None)
+    page = request.args.get('page', 0, int)
+    posts = database.get_posts(skip=page*POSTS_PER_PAGE,
+                               limit=POSTS_PER_PAGE,
+                               tag=tag)
+
+    total_number_of_posts = database.get_number_of_posts(tag)
+    posts_before = page > 0
+    posts_after = total_number_of_posts > (page + 1) * POSTS_PER_PAGE
+
     for post in posts:
         for language, translation in post['translations'].items():
             translation['html'] = utils.md_to_html(translation['markdown'])
 
-    return render_template('posts.html', posts=posts, **common_values())
+    base_path = '/posts?tag={}&'.format(tag) if tag else '/posts?'
+    previous_page_path = base_path + 'page={}'.format(page - 1)
+    next_page_path = base_path + 'page={}'.format(page + 1)
+    return render_template('posts.html',
+                           posts=posts,
+                           page=page,
+                           posts_before=posts_before,
+                           posts_after=posts_after,
+                           previous_page_path=previous_page_path,
+                           next_page_path=next_page_path,
+                           **common_values())
 
 
 @app.route('/posts/<post_id>')
@@ -132,7 +150,7 @@ def add_post():
 @app.route('/drafts')
 @login_required
 def drafts_list():
-    drafts = database.get_all_drafts()
+    drafts = database.get_drafts()
     for draft in drafts:
         for language, translation in draft['translations'].items():
             translation['html'] = utils.md_to_html(translation['markdown'])

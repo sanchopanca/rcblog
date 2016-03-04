@@ -36,12 +36,12 @@ class TestDataBase(unittest.TestCase):
             }
         }
         self.date_base.add_post(eng_translation, ['tag1', 'tag2'])
-        posts = self.date_base.get_all_posts()
+        posts = self.date_base.get_posts()
         self.assertEqual(len(posts), 1)
         post = posts[0]
         id_ = post['id']
         self.date_base.add_translation(id_, jbo_and_rus_translations)
-        posts = self.date_base.get_all_posts()
+        posts = self.date_base.get_posts()
         self.assertEqual(len(posts), 1)
         post = posts[0]
         self.assertEqual(post['translations']['eng']['markdown'], '`markdown`')
@@ -60,31 +60,25 @@ class TestDataBase(unittest.TestCase):
             }
         }
         self.date_base.add_post(eng_and_rus_translations, ['tag1', 'tag2'])
-        posts = self.date_base.get_all_posts()
-        self.assertEqual(len(posts), 1)
+        posts = self.date_base.get_posts()
+        self.assertEqual(self.date_base.get_number_of_posts(), 1)
         post = posts[0]
         id_ = post['id']
         self.date_base.add_tags(id_, ['tag3', 'tag4'])
-        posts = self.date_base.get_all_posts()
-        self.assertEqual(len(posts), 1)
+        posts = self.date_base.get_posts()
+        self.assertEqual(self.date_base.get_number_of_posts(), 1)
         post = posts[0]
         self.assertEqual(post['tags'], ['tag1', 'tag2', 'tag3', 'tag4'])
 
     def get_by_tag(self):
         self.date_base.add_post({'a': 'b'}, ['tag1', 'tag2'])
 
-        posts = self.date_base.get_posts_by_tag('tag1')
-        self.assertEqual(len(posts), 1)
-        posts = self.date_base.get_posts_by_tag('tag2')
-        self.assertEqual(len(posts), 1)
-        posts = self.date_base.get_posts_by_tag('tag3')
-        self.assertEqual(len(posts), 0)
+        self.assertEqual(self.date_base.get_number_of_posts(), 1)
+        self.assertEqual(self.date_base.get_number_of_posts(), 1)
+        self.assertEqual(self.date_base.get_number_of_posts(), 0)
 
         self.date_base.add_post({'b': 'a'}, ['tag2', 'tag3'])
 
-        posts = self.date_base.get_posts_by_tag('tag1')
-        self.assertEqual(len(posts), 1)
-        posts = self.date_base.get_posts_by_tag('tag2')
-        self.assertEqual(len(posts), 2)
-        posts = self.date_base.get_posts_by_tag('tag3')
-        self.assertEqual(len(posts), 1)
+        self.assertEqual(self.date_base.get_number_of_posts(), 1)
+        self.assertEqual(self.date_base.get_number_of_posts(), 2)
+        self.assertEqual(self.date_base.get_number_of_posts(), 1)

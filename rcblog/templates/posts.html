@@ -25,5 +25,20 @@
         </div>
     </div>
     {% endfor %}
+    <nav>
+        <ul class="pagination">
+            {% if posts_before %}
+            <li><a href="{{previous_page_path}}"><span aria-hidden="true">&laquo;</span></a></li>
+            {% else %}
+            <li class="disabled"><span aria-hidden="true">&laquo;</span></li>
+            {% endif %}
+            <li class="active"><span aria-hidden="true">{{page}}</span></li>
+            {% if posts_after %}
+            <li><a href="{{next_page_path}}"><span aria-hidden="true">&raquo;</span></a></li>
+            {% else %}
+            <li class="disabled"><span aria-hidden="true">&raquo;</span></li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 {% endblock %}
