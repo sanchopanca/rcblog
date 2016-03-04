@@ -7,6 +7,9 @@
         <a href="{{'/posts/%s' % post['id']}}">
             <h2>{{post['translations']['eng']['title']}}</h2>
         </a>
+        <div class="date">
+            {{ post['date'].date() }}
+        </div>
         <div class="post-content well">
             {{post['translations']['eng']['html'] | safe}}
         </div>

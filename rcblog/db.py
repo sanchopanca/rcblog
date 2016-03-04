@@ -1,3 +1,6 @@
+import datetime
+
+import pytz
 import rethinkdb as r
 from rethinkdb.errors import ReqlRuntimeError
 
@@ -35,10 +38,8 @@ class DataBase(object):
     def _drop_credentials_table(self):
         r.table_drop('credentials').run(self.connection)
 
-    def add_post(self, translations: dict, tags: list, draft=False):
+    def add_post(self, translations: dict, tags: list, draft=False, date=None):
         """
-        :param draft: is this post draft or not
-        :param tags: list of tags
         :param translations:
          dict {
             'lng': {
@@ -46,18 +47,27 @@ class DataBase(object):
                 'markdown': 'content of post'
             }
         }
+        :param tags: list of tags
+        :param draft: is this post draft or not
+        :param date: date of post
         """
+        if date is None:
+            date = datetime.datetime.now(pytz.utc)
         r.table('posts').insert({
             'translations': translations,
             'draft': draft,
             'tags': tags,
+            'date': date,
         }).run(self.connection)
 
-    def update_post(self, id_, translations: dict, tags: list, draft=False):
+    def update_post(self, id_, translations: dict, tags: list, draft=False, date=None):
+        if date is None:
+            date = datetime.datetime.now(pytz.utc)
         r.table('posts').get(id_).update({
             'translations': translations,
             'draft': draft,
             'tags': tags,
+            'date': date,
         }).run(self.connection)
 
     def add_translation(self, id_, translations: dict):

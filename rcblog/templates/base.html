@@ -5,7 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    {% block styles %}
     <link href="{{url_for('bower.static', filename='bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
+    {% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
@@ -43,7 +45,9 @@
     </nav>
     {% endblock %}
     {% block content %}{% endblock %}
+    {% block scripts %}
     <script src="{{url_for('bower.static', filename='jquery/dist/jquery.js')}}"></script>
     <script src="{{url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js')}}"></script>
+    {% endblock %}
 </body>
 </html>

@@ -1,6 +1,9 @@
+import datetime
+
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_bower import Bower
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+import pytz
 
 from rcblog import utils
 from rcblog import crypto
@@ -113,6 +116,7 @@ def show_draft(draft_id):
                            values=post['translations'],
                            tags=post['tags'],
                            post_id=post['id'],
+                           date=post['date'].strftime('%Y-%m-%d'),
                            **common_values())
 
 
@@ -154,11 +158,20 @@ def commit_post():
                 'markdown': md,
             }
     post_id = request.form.get('post-id', None)
+    date = request.form.get('date')
+    if isinstance(date, str):
+        try:
+            date = datetime.datetime.strptime(date, '%Y-%m-%d')
+            date = date.replace(tzinfo=pytz.utc)
+        except ValueError:
+            date = None
+    else:
+        date = None
     tags = request.form.get('tags')
     tags = tags.split(', ') if tags else []
     draft = bool(request.form.get('draft', False))
     if post_id:
-        database.update_post(post_id, post['translations'], tags, draft)
+        database.update_post(post_id, post['translations'], tags, draft, date)
     else:
-        database.add_post(post['translations'], tags, draft)
+        database.add_post(post['translations'], tags, draft, date)
     return redirect(url_for('index'))
