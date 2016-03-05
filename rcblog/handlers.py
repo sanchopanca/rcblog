@@ -1,9 +1,11 @@
 import datetime
+import urllib.parse
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_bower import Bower
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import pytz
+from werkzeug.contrib.atom import AtomFeed
 
 from rcblog import utils
 from rcblog import crypto
@@ -26,6 +28,10 @@ def common_values():
     return {
         'logged_in': current_user.is_authenticated,
     }
+
+
+def make_external(url):
+    return urllib.parse.urljoin(request.url_root, url)
 
 
 @login_manager.user_loader
@@ -186,3 +192,20 @@ def commit_post():
     else:
         database.add_post(post['translations'], tags, draft, date)
     return redirect(url_for('index'))
+
+
+@app.route('/atom.xml')
+def atom():
+    feed = AtomFeed('kovalev.engineer blog',
+                    feed_url=request.url, url=request.url_root)
+    posts = database.get_posts(limit=10)
+    for post in posts:
+        feed.add(post['translations']['eng']['title'],
+                 post['translations']['eng']['html'],
+                 content_type='html',
+                 author='Aleksandr Kovalev',
+                 url=make_external('posts/{}/{}'.format(post['id'],
+                                                        utils.urlify(post['translations']['eng']['title']))),
+                 updated=post['date'],
+                 published=post['date'])
+    return feed.get_response()
