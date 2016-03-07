@@ -188,6 +188,9 @@ def commit_post():
     tags = tags.split(', ') if tags else []
     draft = bool(request.form.get('draft', False))
     if post_id:
+        old_post = database.get_post_by_id(post_id)
+        if date.date() == old_post['date'].date():
+            date = old_post['date']
         database.update_post(post_id, post['translations'], tags, draft, date)
     else:
         database.add_post(post['translations'], tags, draft, date)
