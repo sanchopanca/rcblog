@@ -55,7 +55,11 @@
             {% endif %}
         </div>
         <div class="checkbox">
+                {% if draft is defined and draft %}
+                <label><input type="checkbox" name="draft" value="1" checked>Draft</label>
+                {% else %}
                 <label><input type="checkbox" name="draft" value="1">Draft</label>
+                {% endif %}
         </div>
         {% if post_id is defined %}
         <input type="hidden" name="post-id" value="{{post_id}}">

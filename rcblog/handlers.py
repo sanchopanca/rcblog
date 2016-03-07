@@ -131,7 +131,7 @@ def show_draft(draft_id):
     for language in remaining_languages:
         post['translations'][language] = {'title': '', 'markdown': '', 'html': ''}
     return render_template('draft.html',
-                           post=post,
+                           draft=post['draft'],
                            selected_language=selected_language,
                            languages=all_languages,
                            values=post['translations'],
