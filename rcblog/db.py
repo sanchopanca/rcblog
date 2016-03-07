@@ -42,7 +42,7 @@ class DataBase(object):
     def _drop_credentials_table(self):
         r.table_drop('credentials').run(self.connection)
 
-    def add_post(self, translations: dict, tags: list, draft=False, date=None):
+    def add_post(self, translations: dict, tags: list, draft=False):
         """
         :param translations:
          dict {
@@ -53,32 +53,37 @@ class DataBase(object):
         }
         :param tags: list of tags
         :param draft: is this post draft or not
-        :param date: date of post
         """
         for language, translation in translations.items():
             if 'markdown' in translation:
                 translation['html'] = utils.md_to_html(translation['markdown'])
-        if date is None:
-            date = datetime.datetime.now(pytz.utc)
+        date = datetime.datetime.now(pytz.utc)
         r.table('posts').insert({
             'translations': translations,
             'draft': draft,
             'tags': tags,
-            'date': date,
+            'publish_date': date,
+            'update_date': date,
         }).run(self.connection)
 
-    def update_post(self, id_, translations: dict, tags: list, draft=False, date=None):
+    def update_post(self, id_, translations: dict, tags: list, draft=False):
         for language, translation in translations.items():
             if 'markdown' in translation:
                 translation['html'] = utils.md_to_html(translation['markdown'])
-        if date is None:
+        if draft:
+            r.table('posts').get(id_).update({
+                'translations': translations,
+                'draft': draft,
+                'tags': tags,
+            }).run(self.connection)
+        else:  # update date
             date = datetime.datetime.now(pytz.utc)
-        r.table('posts').get(id_).update({
-            'translations': translations,
-            'draft': draft,
-            'tags': tags,
-            'date': date,
-        }).run(self.connection)
+            r.table('posts').get(id_).update({
+                'translations': translations,
+                'draft': draft,
+                'tags': tags,
+                'update_date': date,
+            }).run(self.connection)
 
     def add_translation(self, id_, translations: dict):
         for language, translation in translations.items():

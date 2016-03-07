@@ -8,7 +8,7 @@
             <h2>{{post['translations']['eng']['title']}}</h2>
         </a>
         <div class="date">
-            {{ post['date'].date() }}
+            Published: {{ post['publish_date'].date() }} Last update: {{ post['update_date'].date() }}
         </div>
         <div class="post-content well">
             {{post['translations']['eng']['html'] | safe}}

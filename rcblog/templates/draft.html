@@ -1,8 +1,4 @@
 {% extends "base.html" %}
-{% block styles %}
-{{ super() }}
-<link href="{{url_for('bower.static', filename='bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')}}" rel="stylesheet">
-{% endblock %}
 {% block title %}Draft{% endblock %}
 {% block content %}
 <div class="container">
@@ -46,14 +42,6 @@
             <label for="tags">Tags separated by comma:</label>
             <input type="text" class="form-control" id="tags" name="tags" value="{{tags | join(', ')}}">
         </div>
-        <div class="form-group">
-            <label for="date">Date:</label>
-            {% if date is defined %}
-            <input type="text" class="form-control datepicker-field" name="date" id="date" value="{{date}}">
-            {% else %}
-            <input type="text" class="form-control datepicker-field" name="date" id="date">
-            {% endif %}
-        </div>
         <div class="checkbox">
                 {% if draft is defined and draft %}
                 <label><input type="checkbox" name="draft" value="1" checked>Draft</label>
@@ -67,13 +55,4 @@
         <button type="submit" class="btn btn-default">Submit</button>
     </form>
 </div>
-{% endblock %}
-{% block scripts %}
-{{ super() }}
-<script src="{{url_for('bower.static', filename='bootstrap-datepicker/dist/js/bootstrap-datepicker.js')}}"></script>
-<script>
-    $('.datepicker-field').datepicker({
-        format: "yyyy-mm-dd"
-    });
-</script>
 {% endblock %}

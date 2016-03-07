@@ -11,6 +11,9 @@
             {% endif %}
         {% endfor %}
     </ul>
+    <div class="date">
+        Published: {{ post['publish_date'].date() }} Last update: {{ post['update_date'].date() }}
+    </div>
     <div class="tab-content">
         {% for language_code, translation in post['translations'].items() %}
         {% if selected_language == language_code %}

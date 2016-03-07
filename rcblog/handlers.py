@@ -1,10 +1,8 @@
-import datetime
 import urllib.parse
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_bower import Bower
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-import pytz
 from werkzeug.contrib.atom import AtomFeed
 
 from rcblog import utils
@@ -175,25 +173,13 @@ def commit_post():
                 'markdown': md,
             }
     post_id = request.form.get('post-id', None)
-    date = request.form.get('date')
-    if isinstance(date, str):
-        try:
-            date = datetime.datetime.strptime(date, '%Y-%m-%d')
-            date = date.replace(tzinfo=pytz.utc)
-        except ValueError:
-            date = None
-    else:
-        date = None
     tags = request.form.get('tags')
     tags = tags.split(', ') if tags else []
     draft = bool(request.form.get('draft', False))
     if post_id:
-        old_post = database.get_post_by_id(post_id)
-        if date.date() == old_post['date'].date():
-            date = old_post['date']
-        database.update_post(post_id, post['translations'], tags, draft, date)
+        database.update_post(post_id, post['translations'], tags, draft)
     else:
-        database.add_post(post['translations'], tags, draft, date)
+        database.add_post(post['translations'], tags, draft)
     return redirect(url_for('index'))
 
 
@@ -209,6 +195,6 @@ def atom():
                  author='Aleksandr Kovalev',
                  url=make_external('posts/{}/{}'.format(post['id'],
                                                         utils.urlify(post['translations']['eng']['title']))),
-                 updated=post['date'],
-                 published=post['date'])
+                 updated=post['update_date'],
+                 published=post['publish_date'])
     return feed.get_response()
