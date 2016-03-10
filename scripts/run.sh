@@ -15,3 +15,5 @@ docker run -d \
     -p 5000:5000 --link rethinkdb-rcblog \
     --restart=always \
      rcblog
+
+caddy -conf etc/Caddyfile
