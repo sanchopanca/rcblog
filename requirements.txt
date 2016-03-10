@@ -5,3 +5,4 @@ rethinkdb
 Flask-Login
 pyscrypt
 pytz
+gunicorn

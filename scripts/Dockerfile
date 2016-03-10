@@ -4,8 +4,8 @@ COPY . /rcblog
 
 RUN pip3 install -r /rcblog/requirements.txt
 
-EXPOSE 5000
+EXPOSE 8000
 
 WORKDIR /rcblog
 
-CMD ["python3", "run.py"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "rcblog:app"]

@@ -12,7 +12,7 @@ sleep 5
 
 docker run -d \
     --name rcblog-web \
-    -p 5000:5000 --link rethinkdb-rcblog \
+    -p 8000:8000 --link rethinkdb-rcblog \
     --restart=always \
      rcblog
 
