@@ -135,7 +135,6 @@ def show_draft(draft_id):
                            values=post['translations'],
                            tags=post['tags'],
                            post_id=post['id'],
-                           date=post['date'].strftime('%Y-%m-%d'),
                            **common_values())
 
 
