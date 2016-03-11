@@ -16,4 +16,4 @@ docker run -d \
     --restart=always \
      rcblog
 
-caddy -conf etc/Caddyfile
+nohup caddy -conf etc/Caddyfile &

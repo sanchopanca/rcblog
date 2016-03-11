@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+killall caddy
+
 docker stop rcblog-web
 docker rm rcblog-web
 
