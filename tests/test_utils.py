@@ -15,6 +15,6 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(utils.difference_of_dictionaries(d2, d1), {})
 
     def test_parse_accept_language(self):
-        result = utils.parse_accept_language('da, en-gb;q=0.8, en;q=0.7')
-        expected = ['da', 'en']
+        result = utils.parse_accept_language('da, en-gb;q=0.8, en;q=0.7, ru;q=0.5')
+        expected = ['dan', 'eng', 'rus']
         self.assertEqual(result, expected)

@@ -2,6 +2,8 @@ import re
 
 import CommonMark
 
+from rcblog import data
+
 
 def md_to_html(md: str) -> str:
     parser = CommonMark.Parser()
@@ -56,7 +58,12 @@ def parse_accept_language(accept_language):
                     continue
             locales[locale] = float(q)
 
-    return sorted(locales, key=lambda l: locales[l], reverse=True)
+    iso_639_1 = sorted(locales, key=lambda l: locales[l], reverse=True)
+    iso_639_3 = []
+    for language in iso_639_1:
+        if language in data.ISO_639_1_TO_ISO_639_3:
+            iso_639_3.append(data.ISO_639_1_TO_ISO_639_3[language])
+    return iso_639_3
 
 if __name__ == '__main__':
     print(parse_accept_language(accept_language='da, en-gb;q=0.8, en;q=0.7'))
