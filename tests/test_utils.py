@@ -13,3 +13,8 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(utils.difference_of_dictionaries(d1, d1), {})
 
         self.assertEqual(utils.difference_of_dictionaries(d2, d1), {})
+
+    def test_parse_accept_language(self):
+        result = utils.parse_accept_language('da, en-gb;q=0.8, en;q=0.7')
+        expected = ['da', 'en']
+        self.assertEqual(result, expected)

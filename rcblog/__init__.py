@@ -1,4 +1,4 @@
-from rcblog.handlers import app
+from rcblog.views import app
 
 
 def main():

@@ -74,6 +74,7 @@ def logout():
 
 @app.route('/posts')
 def posts_list():
+    print(request.headers.get('Accept-Language'))
     tag = request.args.get('tag', None)
     page = request.args.get('page', 0, int)
     posts = database.get_posts(skip=page*POSTS_PER_PAGE,
