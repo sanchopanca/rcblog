@@ -8,6 +8,7 @@
     {% block styles %}
     <link href="{{url_for('bower.static', filename='bootstrap/dist/css/bootstrap.css')}}" rel="stylesheet">
     {% endblock %}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
