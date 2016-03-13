@@ -41,6 +41,8 @@ def urlify(s):
 # based on
 # https://siongui.github.io/2012/10/11/python-parse-accept-language-in-http-request-header/
 def parse_accept_language(accept_language):
+    if accept_language is None:
+        return []
     languages = accept_language.split(",")
     locales = {}
 
@@ -64,6 +66,22 @@ def parse_accept_language(accept_language):
         if language in data.ISO_639_1_TO_ISO_639_3:
             iso_639_3.append(data.ISO_639_1_TO_ISO_639_3[language])
     return iso_639_3
+
+
+def choose_language(post_languages, user_languages):
+    for language in user_languages:
+        if language in post_languages:
+            selected_language = language
+            break
+    else:
+        if 'eng' in post_languages:
+            selected_language = 'eng'
+        else:
+            try:
+                selected_language = post_languages[0]
+            except IndexError:
+                return None
+    return selected_language
 
 if __name__ == '__main__':
     print(parse_accept_language(accept_language='da, en-gb;q=0.8, en;q=0.7'))

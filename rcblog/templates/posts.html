@@ -5,13 +5,13 @@
     {% for post in posts if post['translations'] %}
     <article class="blogpost">
         <a href="{{'/posts/%s/%s' % (post['id'], post['url'])}}">
-            <h2>{{post['translations']['eng']['title']}}</h2>
+            <h2>{{post['translations'][post['language']]['title']}}</h2>
         </a>
         <div class="date">
             Published: {{ post['publish_date'].date() }} Last update: {{ post['update_date'].date() }}
         </div>
         <div class="post-content well">
-            {{post['translations']['eng']['html'] | safe}}
+            {{post['translations'][post['language']]['html'] | safe}}
         </div>
     </article>
     <div class="tags">

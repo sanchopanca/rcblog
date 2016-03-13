@@ -6,10 +6,10 @@
     {% for post in posts %}
     <article class="blogpost">
         <a href="{{'/drafts/%s' % post['id']}}">
-            <h2>{{post['translations']['eng']['title']}}</h2>
+            <h2>{{post['translations'][post['language']]['title']}}</h2>
         </a>
         <div class="post-content well">
-            {{post['translations']['eng']['html'] | safe}}
+            {{post['translations'][post['language']]['html'] | safe}}
         </div>
     </article>
     {% endfor %}

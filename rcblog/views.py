@@ -1,6 +1,6 @@
 import urllib.parse
 
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_bower import Bower
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.contrib.atom import AtomFeed
@@ -74,25 +74,32 @@ def logout():
 
 @app.route('/posts')
 def posts_list():
-    print(request.headers.get('Accept-Language'))
+    accept_language = request.headers.get('Accept-Language')
+    user_languages = utils.parse_accept_language(accept_language)
     tag = request.args.get('tag', None)
     page = request.args.get('page', 0, int)
     posts = database.get_posts(skip=page*POSTS_PER_PAGE,
                                limit=POSTS_PER_PAGE,
                                tag=tag)
+    posts_to_show = []
+    for post in posts:
+        language = utils.choose_language(list(post['translations'].keys()), user_languages)
+        if language is not None:
+            post['language'] = language
+            posts_to_show.append(post)
 
     total_number_of_posts = database.get_number_of_posts(tag)
     posts_before = page > 0
     posts_after = total_number_of_posts > (page + 1) * POSTS_PER_PAGE
 
-    for post in posts:
-        post['url'] = utils.urlify(post['translations']['eng']['title'])
+    for post in posts_to_show:
+        post['url'] = utils.urlify(post['translations'][post['language']]['title'])
 
     base_path = '/posts?tag={}&'.format(tag) if tag else '/posts?'
     previous_page_path = base_path + 'page={}'.format(page - 1)
     next_page_path = base_path + 'page={}'.format(page + 1)
     return render_template('posts.html',
-                           posts=posts,
+                           posts=posts_to_show,
                            page=page,
                            posts_before=posts_before,
                            posts_after=posts_after,
@@ -104,8 +111,12 @@ def posts_list():
 @app.route('/posts/<post_id>')
 @app.route('/posts/<post_id>/<title>')
 def show_post(post_id, title):
-    selected_language = request.args.get('lang', 'eng')
+    accept_language = request.headers.get('Accept-Language')
+    user_languages = utils.parse_accept_language(accept_language)
     post = database.get_post_by_id(post_id)
+    selected_language = utils.choose_language(list(post['translations'].keys()), user_languages)
+    if selected_language is None:
+        abort(404)
     language_codes = []
     for language, translation in post['translations'].items():
         language_codes.append(language)
@@ -151,8 +162,16 @@ def add_post():
 @app.route('/drafts')
 @login_required
 def drafts_list():
+    accept_language = request.headers.get('Accept-Language')
+    user_languages = utils.parse_accept_language(accept_language)
     drafts = database.get_drafts()
-    return render_template('drafts.html', posts=drafts, **common_values())
+    drafts_to_show = []
+    for draft in drafts:
+        language = utils.choose_language(list(draft['translations'].keys()), user_languages)
+        if language is not None:
+            draft['language'] = language
+            drafts_to_show.append(draft)
+    return render_template('drafts.html', posts=drafts_to_show, **common_values())
 
 
 @app.route('/posts', methods=['POST'])
