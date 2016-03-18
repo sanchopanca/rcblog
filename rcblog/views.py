@@ -12,8 +12,7 @@ from rcblog.user import User
 
 database = DataBase()
 
-app = Flask(__name__)
-app.secret_key = 'so_secret'
+app = Flask(__name__, instance_relative_config=True)
 Bower(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
