@@ -14,6 +14,11 @@
             {{post['translations'][post['language']]['html'] | safe}}
         </div>
     </article>
+    <div class="button">
+        <a href="https://twitter.com/intent/tweet?text={{post['external_url']}}" class="btn btn-primary" target="_blank">
+            <span>Tweet this post</span>
+        </a>
+    </div>
     <div class="tags">
         <div class="btn-group" role="group">
             {% for tag in post['tags'] %}

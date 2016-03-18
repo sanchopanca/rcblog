@@ -85,6 +85,8 @@ def posts_list():
         language = utils.choose_language(list(post['translations'].keys()), user_languages)
         if language is not None:
             post['language'] = language
+            url = make_external('posts/{}/{}'.format(post['id'], utils.urlify(post['translations'][language]['title'])))
+            post['external_url'] = url
             posts_to_show.append(post)
 
     total_number_of_posts = database.get_number_of_posts(tag)
@@ -120,6 +122,9 @@ def show_post(post_id, title):
     for language, translation in post['translations'].items():
         language_codes.append(language)
     languages = database.get_languages_by_codes(*language_codes)
+    url = make_external('posts/{}/{}'.format(post['id'],
+                                             utils.urlify(post['translations'][selected_language]['title'])))
+    post['external_url'] = url
     return render_template('post.html',
                            post=post,
                            selected_language=selected_language,
@@ -207,12 +212,13 @@ def atom():
                     feed_url=request.url, url=request.url_root)
     posts = database.get_posts(limit=10)
     for post in posts:
-        feed.add(post['translations']['eng']['title'],
-                 post['translations']['eng']['html'],
+        language = utils.choose_language(list(post['translations'].keys()), 'eng')
+        feed.add(post['translations'][language]['title'],
+                 post['translations'][language]['html'],
                  content_type='html',
                  author='Aleksandr Kovalev',
                  url=make_external('posts/{}/{}'.format(post['id'],
-                                                        utils.urlify(post['translations']['eng']['title']))),
+                                                        utils.urlify(post['translations'][language]['title']))),
                  updated=post['update_date'],
                  published=post['publish_date'])
     return feed.get_response()
