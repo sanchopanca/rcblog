@@ -1,6 +1,10 @@
 class User(object):
-    def __init__(self):
-        self.id = '1'
+    _instance = None
+
+    def __new__(cls, *args):
+        if not cls._instance:
+            cls._instance = super(User, cls).__new__(cls, *args)
+        return cls._instance
 
     @property
     def is_authenticated(self):
@@ -14,17 +18,10 @@ class User(object):
     def is_anonymous(self):
         return False
 
-    def get_id(self):
-        return self.id
+    @staticmethod
+    def get_id():
+        return '1'
 
     @staticmethod
-    def get_by_id(user_id):
-        if user_id == '1':
-            return User()
-        return None
-
-    @staticmethod
-    def get_by_credentials(username, password):
-        if username == 'admin' and password == 'secret':
-            return User()
-        return None
+    def get_by_id(*args):
+        return User()

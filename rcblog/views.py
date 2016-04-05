@@ -57,7 +57,7 @@ def login():
                                                             credentials['password_hash'],
                                                             credentials['salt'])
             if credentials_are_correct:
-                user = User.get_by_id('1')  # TODO refactor
+                user = User()
         if user:
             login_user(user, remember)
             return redirect(url_for('posts_list'))
