@@ -4,7 +4,7 @@ docker run -d \
     --name rethinkdb-rcblog \
     rethinkdb:2
 
-sleep 5
+sleep 10
 
 docker run --rm \
     -it \
