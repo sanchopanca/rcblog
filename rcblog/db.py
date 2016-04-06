@@ -135,7 +135,6 @@ class DataBase(object):
         return languages
 
     def get_languages_by_codes(self, *codes):
-        # TODO Optimize the query
         languages = {}
         cursor = r.table('languages').run(self.connection)
         for language in cursor:
